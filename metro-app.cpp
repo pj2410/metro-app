@@ -6,6 +6,7 @@
 #include <stack>
 #include <cmath>
 #include <cstring>
+#include<bits/stdc++.h>
 using namespace std;
 
 class Graph_M
@@ -14,7 +15,7 @@ public:
     class Vertex
     {
     public:
-        unordered_map<string, int> nbrs;
+        unordered_map<string, int> neighbours;
     };
 
     static unordered_map<string, Vertex> vtces;
@@ -44,7 +45,7 @@ public:
     {
         Vertex vtx = vtces[vname];
         vector<string> keys;
-        for (auto it = vtx.nbrs.begin(); it != vtx.nbrs.end(); it++)
+        for (auto it = vtx.neighbours.begin(); it != vtx.neighbours.end(); it++)
         {
             keys.push_back(it->first);
         }
@@ -52,7 +53,7 @@ public:
         for (string key : keys)
         {
             Vertex nbrVtx = vtces[key];
-            nbrVtx.nbrs.erase(vname);
+            nbrVtx.neighbours.erase(vname);
         }
 
         vtces.erase(vname);
@@ -64,7 +65,7 @@ public:
         for (auto it = vtces.begin(); it != vtces.end(); it++)
         {
             Vertex vtx = it->second;
-            count += vtx.nbrs.size();
+            count += vtx.neighbours.size();
         }
 
         return count / 2;
@@ -72,7 +73,7 @@ public:
 
     bool containsEdge(string vname1, string vname2)
     {
-        if (vtces.count(vname1) == 0 || vtces.count(vname2) == 0 || vtces[vname1].nbrs.count(vname2) == 0)
+        if (vtces.count(vname1) == 0 || vtces.count(vname2) == 0 || vtces[vname1].neighbours.count(vname2) == 0)
         {
             return false;
         }
@@ -82,24 +83,24 @@ public:
 
     void addEdge(string vname1, string vname2, int value)
     {
-        if (vtces.count(vname1) == 0 || vtces.count(vname2) == 0 || vtces[vname1].nbrs.count(vname2) > 0)
+        if (vtces.count(vname1) == 0 || vtces.count(vname2) == 0 || vtces[vname1].neighbours.count(vname2) > 0)
         {
             return;
         }
 
-        vtces[vname1].nbrs[vname2] = value;
-        vtces[vname2].nbrs[vname1] = value;
+        vtces[vname1].neighbours[vname2] = value;
+        vtces[vname2].neighbours[vname1] = value;
     }
 
     void removeEdge(string vname1, string vname2)
     {
-        if (vtces.count(vname1) == 0 || vtces.count(vname2) == 0 || vtces[vname1].nbrs.count(vname2) == 0)
+        if (vtces.count(vname1) == 0 || vtces.count(vname2) == 0 || vtces[vname1].neighbours.count(vname2) == 0)
         {
             return;
         }
 
-        vtces[vname1].nbrs.erase(vname2);
-        vtces[vname2].nbrs.erase(vname1);
+        vtces[vname1].neighbours.erase(vname2);
+        vtces[vname2].neighbours.erase(vname1);
     }
 
     void display_Map()
@@ -113,7 +114,7 @@ public:
             string key = it->first;
             string str = key + " =>" + "\n";
             Vertex vtx = it->second;
-            for (auto it2 = vtx.nbrs.begin(); it2 != vtx.nbrs.end(); it2++)
+            for (auto it2 = vtx.neighbours.begin(); it2 != vtx.neighbours.end(); it2++)
             {
                 string nbr = it2->first;
                 str += "\t" + nbr + "\t";
@@ -133,7 +134,7 @@ public:
     void display_Stations()
     {
         cout << endl;
-        cout << "***********************************************************************" << endl;
+        cout << "*" << endl;
         cout << endl;
         int i = 1;
         for (auto it = vtces.begin(); it != vtces.end(); it++)
@@ -143,7 +144,7 @@ public:
             i++;
         }
         cout << endl;
-        cout << "***********************************************************************" << endl;
+        cout << "*" << endl;
         cout << endl;
     }
 
@@ -157,7 +158,7 @@ public:
         processed[vname1] = true;
 
         Vertex vtx = vtces[vname1];
-        for (auto it = vtx.nbrs.begin(); it != vtx.nbrs.end(); it++)
+        for (auto it = vtx.neighbours.begin(); it != vtx.neighbours.end(); it++)
         {
             string nbr = it->first;
             if (!processed.count(nbr))
@@ -226,7 +227,7 @@ public:
             ans.push_back(rp.vname);
 
             Vertex v = vtces[rp.vname];
-            for (auto it = v.nbrs.begin(); it != v.nbrs.end(); it++)
+            for (auto it = v.neighbours.begin(); it != v.neighbours.end(); it++)
             {
                 string nbr = it->first;
                 if (map.count(nbr))
@@ -235,9 +236,9 @@ public:
                     Vertex k = vtces[rp.vname];
                     int nc;
                     if (nan)
-                        nc = rp.cost + 120 + 40 * k.nbrs[nbr];
+                        nc = rp.cost + 120 + 40 * k.neighbours[nbr];
                     else
-                        nc = rp.cost + k.nbrs[nbr];
+                        nc = rp.cost + k.neighbours[nbr];
 
                     if (nc < oc)
                     {
@@ -301,7 +302,7 @@ public:
             }
 
             Vertex rpvtx = vtces[rp.vname];
-            for (auto it = rpvtx.nbrs.begin(); it != rpvtx.nbrs.end(); it++)
+            for (auto it = rpvtx.neighbours.begin(); it != rpvtx.neighbours.end(); it++)
             {
                 string nbr = it->first;
                 if (!processed.count(nbr))
@@ -309,7 +310,7 @@ public:
                     Pair np;
                     np.vname = nbr;
                     np.psf = rp.psf + nbr + "  ";
-                    np.min_dis = rp.min_dis + rpvtx.nbrs[nbr];
+                    np.min_dis = rp.min_dis + rpvtx.neighbours[nbr];
                     stack.push_front(np);
                 }
             }
@@ -357,7 +358,7 @@ public:
             }
 
             Vertex rpvtx = vtces[rp.vname];
-            for (auto it = rpvtx.nbrs.begin(); it != rpvtx.nbrs.end(); it++)
+            for (auto it = rpvtx.neighbours.begin(); it != rpvtx.neighbours.end(); it++)
             {
                 string nbr = it->first;
                 if (!processed.count(nbr))
@@ -365,7 +366,7 @@ public:
                     Pair np;
                     np.vname = nbr;
                     np.psf = rp.psf + nbr + "  ";
-                    np.min_time = rp.min_time + 120 + 40 * rpvtx.nbrs[nbr];
+                    np.min_time = rp.min_time + 120 + 40 * rpvtx.neighbours[nbr];
                     stack.push_front(np);
                 }
             }
@@ -383,11 +384,12 @@ public:
         char *temp = strtok((char *)str.c_str(), "  ");
         while (temp != NULL)
         {
-            res[count] = temp;
-            count++;
+            res[count++] = temp;
             temp = strtok(NULL, "  ");
         }
         arr.push_back(res[0]);
+
+        int c=0;
         for (int i = 1; i < count - 1; i++)
         {
             int index = res[i].find('~');
@@ -406,7 +408,7 @@ public:
                 {
                     arr.push_back(res[i] + " ==> " + res[i + 1]);
                     i++;
-                    count++;
+                    c++;
                 }
             }
             else
@@ -414,53 +416,90 @@ public:
                 arr.push_back(res[i]);
             }
         }
-        arr.push_back(to_string(count - 2));
         arr.push_back(res[count - 1]);
+        arr.push_back(to_string(c) );
         return arr;
     }
 
+    vector<int> Get_Minimum_Fare(string src,string dst,int x)
+    {
+        int stations=0;
+        int fare=0;
+        //distance-wise
+
+
+        if(x==7)
+        {
+            stations=get_Interchanges(Get_Minimum_Distance(src, dst)).size()-1;
+        }
+
+        else
+        {
+            stations=get_Interchanges(Get_Minimum_Time(src, dst)).size()-1;
+        }
+
+        if(stations>0 && stations<=3)
+        fare=10;
+
+        else if(stations>3 && stations<=7)
+        fare=20;
+
+        else if(stations>7 && stations<=11)
+        fare=30;
+
+        else if(stations>11 && stations<=20)
+        fare=40;
+
+        else
+        fare=40+ (stations-20)*10;
+
+        return {stations,fare};
+    }
+
+
     static void Create_Metro_Map(Graph_M &g)
     {
-        g.addVertex("Noida Sector 62~B");
-        g.addVertex("Botanical Garden~B");
-        g.addVertex("Yamuna Bank~B");
-        g.addVertex("Rajiv Chowk~BY");
+      g.addVertex("Noida_Sector_62~B");
+        g.addVertex("Botanical_Garden~B");
+        g.addVertex("Yamuna_Bank~B");
+        g.addVertex("Rajiv_Chowk~BY");
         g.addVertex("Vaishali~B");
-        g.addVertex("Moti Nagar~B");
-        g.addVertex("Janak Puri West~BO");
-        g.addVertex("Dwarka Sector 21~B");
-        g.addVertex("Huda City Center~Y");
+        g.addVertex("Moti_Nagar~B");
+        g.addVertex("Janak_Puri_West~BO");
+        g.addVertex("Dwarka_Sector_21~B");
+        g.addVertex("Huda_City_Center~Y");
         g.addVertex("Saket~Y");
         g.addVertex("Vishwavidyalaya~Y");
-        g.addVertex("Chandni Chowk~Y");
-        g.addVertex("New Delhi~YO");
+        g.addVertex("Chandni_Chowk~Y");
+        g.addVertex("New_Delhi~YO");
         g.addVertex("AIIMS~Y");
-        g.addVertex("Shivaji Stadium~O");
-        g.addVertex("DDS Campus~O");
-        g.addVertex("IGI Airport~O");
-        g.addVertex("Rajouri Garden~BP");
-        g.addVertex("Netaji Subhash Place~PR");
-        g.addVertex("Punjabi Bagh West~P");
+        g.addVertex("Shivaji_Stadium~O");
+        g.addVertex("DDS_Campus~O");
+        g.addVertex("IGI_Airport~O");
+        g.addVertex("Rajouri_Garden~BP");
+        g.addVertex("Netaji_Subhash_Place~PR");
+        g.addVertex("Punjabi_Bagh_West~P");
 
-        g.addEdge("Noida Sector 62~B", "Botanical Garden~B", 8);
-        g.addEdge("Botanical Garden~B", "Yamuna Bank~B", 10);
-        g.addEdge("Yamuna Bank~B", "Vaishali~B", 8);
-        g.addEdge("Yamuna Bank~B", "Rajiv Chowk~BY", 6);
-        g.addEdge("Rajiv Chowk~BY", "Moti Nagar~B", 9);
-        g.addEdge("Moti Nagar~B", "Janak Puri West~BO", 7);
-        g.addEdge("Janak Puri West~BO", "Dwarka Sector 21~B", 6);
-        g.addEdge("Huda City Center~Y", "Saket~Y", 15);
+        g.addEdge("Noida_Sector_62~B", "Botanical_Garden~B", 8);
+        g.addEdge("Botanical_Garden~B", "Yamuna_Bank~B", 10);
+        g.addEdge("Yamuna_Bank~B", "Vaishali~B", 8);
+        g.addEdge("Yamuna_Bank~B", "Rajiv_Chowk~BY", 6);
+        g.addEdge("Rajiv_Chowk~BY", "Moti_Nagar~B", 9);
+        g.addEdge("Moti_Nagar~B", "Janak_Puri_West~BO", 7);
+        g.addEdge("Janak_Puri_West~BO", "Dwarka_Sector_21~B", 6);
+        g.addEdge("Huda_City_Center~Y", "Saket~Y", 15);
         g.addEdge("Saket~Y", "AIIMS~Y", 6);
-        g.addEdge("AIIMS~Y", "Rajiv Chowk~BY", 7);
-        g.addEdge("Rajiv Chowk~BY", "New Delhi~YO", 1);
-        g.addEdge("New Delhi~YO", "Chandni Chowk~Y", 2);
-        g.addEdge("Chandni Chowk~Y", "Vishwavidyalaya~Y", 5);
-        g.addEdge("New Delhi~YO", "Shivaji Stadium~O", 2);
-        g.addEdge("Shivaji Stadium~O", "DDS Campus~O", 7);
-        g.addEdge("DDS Campus~O", "IGI Airport~O", 8);
-        g.addEdge("Moti Nagar~B", "Rajouri Garden~BP", 2);
-        g.addEdge("Punjabi Bagh West~P", "Rajouri Garden~BP", 2);
-        g.addEdge("Punjabi Bagh West~P", "Netaji Subhash Place~PR", 3);
+        g.addEdge("AIIMS~Y", "Rajiv_Chowk~BY", 7);
+        g.addEdge("Rajiv_Chowk~BY", "New_Delhi~YO", 1);
+        g.addEdge("New_Delhi~YO", "Chandni_Chowk~Y", 2);
+        g.addEdge("Chandni_Chowk~Y", "Vishwavidyalaya~Y", 5);
+        g.addEdge("New_Delhi~YO", "Shivaji_Stadium~O", 2);
+        g.addEdge("Shivaji_Stadium~O", "DDS_Campus~O", 7);
+        g.addEdge("DDS_Campus~O", "IGI_Airport~O", 8);
+        g.addEdge("Moti_Nagar~B", "Rajouri_Garden~BP", 2);
+        g.addEdge("Punjabi_Bagh_West~P", "Rajouri_Garden~BP", 2);
+        g.addEdge("Punjabi_Bagh_West~P", "Netaji_Subhash_Place~PR", 3);
+
     }
 };
 
@@ -468,7 +507,7 @@ unordered_map<string, Graph_M::Vertex> Graph_M::vtces;
 
 string *printCodelist()
 {
-    cout << "List of station along with their codes:" << endl;
+    cout << "\nList of station along with their codes:" << endl;
     unordered_map<string, Graph_M::Vertex>::iterator it;
     int i = 1, j = 0, m = 1;
     string temp = "";
@@ -516,176 +555,196 @@ int main()
     Graph_M g;
     Graph_M::Create_Metro_Map(g);
 
-    cout << "\n\t\t\t****WELCOME TO THE METRO APP*****" << endl;
+    cout << "\n\n\n\n\t\t\t\t\t\t\t\t\tWELCOME TO THE METRO APP" << endl;
 
     while (true)
     {
-        cout << "\t\t\t\t~~LIST OF ACTIONS~~\n\n";
-        cout << "1. LIST ALL THE STATIONS IN THE MAP" << endl;
-        cout << "2. SHOW THE METRO MAP" << endl;
-        cout << "3. GET SHORTEST DISTANCE FROM A 'SOURCE' STATION TO 'DESTINATION' STATION" << endl;
-        cout << "4. GET SHORTEST TIME TO REACH FROM A 'SOURCE' STATION TO 'DESTINATION' STATION" << endl;
-        cout << "5. GET SHORTEST PATH (DISTANCE WISE) TO REACH FROM A 'SOURCE' STATION TO 'DESTINATION' STATION" << endl;
-        cout << "6. GET SHORTEST PATH (TIME WISE) TO REACH FROM A 'SOURCE' STATION TO 'DESTINATION' STATION" << endl;
-        cout << "7. EXIT THE MENU" << endl;
-        cout << "\nENTER YOUR CHOICE FROM THE ABOVE LIST (1 to 7) : ";
+        cout<<"\n\n\t*********************************************************************************************************************************\n";
+        cout<<"\t*                                                                                                                               *\n";
+        cout<<"\t*                                                                                                                               *\n";
+        cout<<"\t*                                                   ~LIST OF ACTIONS                                                            *\n";
+        cout<<"\t*         1. LIST ALL THE STATIONS IN THE MAP                                                                                   *\n";
+        cout<<"\t*         2. SHOW THE METRO MAP                                                                                                 *\n";
+        cout<<"\t*         3. GET SHORTEST DISTANCE FROM A 'SOURCE' STATION TO 'DESTINATION' STATION                                             *\n";
+        cout<<"\t*         4. GET SHORTEST TIME TO REACH FROM A 'SOURCE' STATION TO 'DESTINATION' STATION                                        *\n";
+        cout<<"\t*         5. GET SHORTEST PATH (DISTANCE WISE) TO REACH FROM A 'SOURCE' STATION TO 'DESTINATION' STATION                        *\n";
+        cout<<"\t*         6. GET SHORTEST PATH (TIME WISE) TO REACH FROM A 'SOURCE' STATION TO 'DESTINATION' STATION                            *\n";
+        cout<<"\t*         7. GET FARE FOR SHORTEST PATH(DISTANCE WISE)                                                                          *\n";
+        cout<<"\t*         8. GET FARE FOR SHORTEST PATH(TIME WISE)                                                                              *\n";
+        cout<<"\t*         9. EXIT THE MENU                                                                                                      *\n";
+        cout<<"\t*                                                                                                                               *\n";
+        cout<<"\t*                                                                                                                               *\n";
+        cout<<"\t*                                                                                                                               *\n";
+        cout<<"\t*********************************************************************************************************************************\n";
+
+        cout << "\n\n";
         int choice = -1;
+        cout<<"ENTER YOUR CHOICE FROM THE ABOVE LIST (1 to 9) :";
         cin >> choice;
-        cout << "\n***********************************************************\n";
-        if (choice == 7)
-        {
-            break;
-        }
+
+        if (choice == 9)
+        {break;}
+
+
         switch (choice)
         {
-        case 1:
-            g.display_Stations();
-            break;
+            case 1:
+                g.display_Stations();
+                break;
 
-        case 2:
-            g.display_Map();
-            break;
+            case 2:
+                g.display_Map();
+                break;
 
-        case 3:
-        {
-            string *keys = printCodelist();
-            cout << "\n1. TO ENTER SERIAL NO. OF STATIONS\n2. TO ENTER CODE OF STATIONS\n3. TO ENTER NAME OF STATIONS\n";
-            cout << "ENTER YOUR CHOICE:";
-            int ch;
-            cin >> ch;
-            int j;
-
-            string st1 = "", st2 = "";
-            cout << "ENTER THE SOURCE AND DESTINATION STATIONS" << endl;
-            if (ch == 1)
+            case 3:
             {
-                int a, b;
-                cin >> a >> b;
-                st1 = keys[a - 1];
-                st2 = keys[b - 1];
-            }
-            else if (ch == 2)
-            {
-                string a, b;
-                cin >> a >> b;
-                for (j = 0; j < Graph_M::vtces.size(); j++)
-                {
-                    if (a == keys[j])
-                        break;
-                }
-                st1 = keys[j];
-                for (j = 0; j < Graph_M::vtces.size(); j++)
-                {
-                    if (b == keys[j])
-                        break;
-                }
-                st2 = keys[j];
-            }
-            else if (ch == 3)
-            {
+                string *keys = printCodelist();
+                string st1, st2;
+                cout << "\nENTER THE SOURCE STATION: ";
                 cin.ignore();
                 getline(cin, st1);
+                cout << "ENTER THE DESTINATION STATION: ";
                 getline(cin, st2);
+
+                unordered_map<string, bool> processed;
+                if (!g.containsVertex(st1) || !g.containsVertex(st2) || !g.hasPath(st1, st2, processed))
+                    cout << "\nTHE INPUTS ARE INVALID" << endl;
+                else
+                    cout << "\nSHORTEST DISTANCE: "<< g.dijkstra(st1, st2, false) << "KM" << endl;
+                break;
             }
-            else
+
+            case 4:
+            {
+                string *keys = printCodelist();
+                string sat1, sat2;
+                cout << "\nENTER THE SOURCE STATION: ";
+                cin.ignore();
+                getline(cin, sat1);
+                cout << "ENTER THE DESTINATION STATION: ";
+                getline(cin, sat2);
+
+                unordered_map<string, bool> processed1;
+                cout << "\nSHORTEST TIME: " << g.dijkstra(sat1, sat2, true) / 60 << " MINUTES" << endl;
+                break;
+            }
+
+            case 5:
+            {
+                string *keys = printCodelist();
+                string s1, s2;
+                cout << "\nENTER THE SOURCE STATION: ";
+                cin.ignore();
+                getline(cin, s1);
+                cout << "ENTER THE DESTINATION STATION: ";
+                getline(cin, s2);
+
+                unordered_map<string, bool> processed2;
+                if (!g.containsVertex(s1) || !g.containsVertex(s2) || !g.hasPath(s1, s2, processed2))
+                    cout << "THE INPUTS ARE INVALID" << endl;
+                else
+                {
+                    vector<string> str = g.get_Interchanges(g.Get_Minimum_Distance(s1, s2));
+                    int len = str.size();
+                    cout<<endl<<endl;
+                    cout << "SOURCE STATION : " << s1 << endl;
+                    cout << "DESTINATION STATION : " << s2 << endl;
+                    cout << "DISTANCE : " << str[len-2]<< endl;
+                    cout << "NUMBER OF INTERCHANGES : " << str[len -1] << endl;
+                    cout << endl<< endl<<"THE PATH IS AS FOLLOWS:\n\n";
+                    for (int i = 0; i <len-2; i++)
+                    {cout << str[i] << endl;}
+                }
+                break;
+            }
+
+            case 6:
+            {
+                string *keys = printCodelist();
+                string ss1, ss2;
+                cout << "\nENTER THE SOURCE STATION: ";
+                cin.ignore();
+                getline(cin, ss1);
+                cout << "ENTER THE DESTINATION STATION: ";
+                getline(cin, ss2);
+
+                unordered_map<string, bool> processed3;
+                if (!g.containsVertex(ss1) || !g.containsVertex(ss2) || !g.hasPath(ss1, ss2, processed3))
+                    cout << "THE INPUTS ARE INVALID" << endl;
+                else
+                {
+                    vector<string> str = g.get_Interchanges(g.Get_Minimum_Time(ss1, ss2));
+                    int len = str.size();
+                    cout<<endl<<endl;
+                    cout << "SOURCE STATION : " << ss1 << endl;
+                    cout << "DESTINATION STATION : " << ss2 << endl;
+                    cout << "TIME : " << str[len-2] << " MINUTES" << endl;
+                    cout << "NUMBER OF INTERCHANGES : " << str[len-1] << endl;
+                    cout << endl<< endl<<"THE PATH IS AS FOLLOWS:\n";
+                    for (int i = 0; i < len-2; i++)
+                    {cout << str[i] << endl;}
+                    cout << endl;
+                }
+                break;
+            }
+
+            case 7:
+            {
+                string *keys = printCodelist();
+                string ss1, ss2;
+                cout << "\nENTER THE SOURCE STATION: ";
+                cin.ignore();
+                getline(cin, ss1);
+                cout << "ENTER THE DESTINATION STATION: ";
+                getline(cin, ss2);
+
+                unordered_map<string, bool> processed3;
+                if (!g.containsVertex(ss1) || !g.containsVertex(ss2) || !g.hasPath(ss1, ss2, processed3))
+                cout << "THE INPUTS ARE INVALID" << endl;
+
+                else
+                {
+                    cout<<"\nNUMBER OF STATIONS IN SHORTEST DISTANCE :"<<g.Get_Minimum_Fare(ss1,ss2,7)[0];
+                    cout<<"\nCALCULATED FARE :Rs"<<g.Get_Minimum_Fare(ss1,ss2,7)[1];
+                }
+
+                break;
+
+            }
+
+            case 8:
+            {
+                string *keys = printCodelist();
+                string ss1, ss2;
+                cout << "\nENTER THE SOURCE STATION: ";
+                cin.ignore();
+                getline(cin, ss1);
+                cout << "ENTER THE DESTINATION STATION: ";
+                getline(cin, ss2);
+
+                unordered_map<string, bool> processed3;
+                if (!g.containsVertex(ss1) || !g.containsVertex(ss2) || !g.hasPath(ss1, ss2, processed3))
+                cout << "THE INPUTS ARE INVALID" << endl;
+
+
+                else
+                {
+                    cout<<"\nNUMBER OF STATIONS IN SHORTEST TIME :"<<g.Get_Minimum_Fare(ss1,ss2,8)[0];
+                    cout<<"\nCALCULATED FARE : Rs"<<g.Get_Minimum_Fare(ss1,ss2,7)[1];
+                }
+
+
+                break;
+
+            }
+
+            default:
             {
                 cout << "Invalid choice" << endl;
-                return 0;
+                break;
             }
-
-            unordered_map<string, bool> processed;
-            if (!g.containsVertex(st1) || !g.containsVertex(st2) || !g.hasPath(st1, st2, processed))
-                cout << "THE INPUTS ARE INVALID" << endl;
-            else
-                cout << "SHORTEST DISTANCE FROM " << st1 << " TO " << st2 << " IS " << g.dijkstra(st1, st2, false) << "KM" << endl;
-            break;
-        }
-
-        case 4:
-        {
-            string sat1, sat2;
-            cout << "ENTER THE SOURCE STATION: ";
-            cin.ignore();
-            getline(cin, sat1);
-            cout << "ENTER THE DESTINATION STATION: ";
-            getline(cin, sat2);
-
-            unordered_map<string, bool> processed1;
-            cout << "SHORTEST TIME FROM (" << sat1 << ") TO (" << sat2 << ") IS " << g.dijkstra(sat1, sat2, true) / 60 << " MINUTES" << endl;
-            break;
-        }
-
-        case 5:
-        {
-            string s1, s2;
-            cout << "ENTER THE SOURCE AND DESTINATION STATIONS" << endl;
-            cin.ignore();
-            getline(cin, s1);
-            getline(cin, s2);
-
-            unordered_map<string, bool> processed2;
-            if (!g.containsVertex(s1) || !g.containsVertex(s2) || !g.hasPath(s1, s2, processed2))
-                cout << "THE INPUTS ARE INVALID" << endl;
-            else
-            {
-                vector<string> str = g.get_Interchanges(g.Get_Minimum_Distance(s1, s2));
-                int len = str.size();
-                cout << "SOURCE STATION : " << s1 << endl;
-                cout << "SOURCE STATION : " << s2 << endl;
-                cout << "DISTANCE : " << str[len - 1] << endl;
-                cout << "NUMBER OF INTERCHANGES : " << str[len - 2] << endl;
-                cout << "~~~~~~~~~~~~~" << endl;
-                cout << "START  ==>  " << str[0] << endl;
-                for (int i = 1; i < len - 3; i++)
-                {
-                    cout << str[i] << endl;
-                }
-                cout << str[len - 3] << "   ==>    END";
-                cout << "\n~~~~~~~~~~~~~" << endl;
-            }
-            break;
-        }
-
-        case 6:
-        {
-            string ss1, ss2;
-            cout << "ENTER THE SOURCE STATION: ";
-            cin.ignore();
-            getline(cin, ss1);
-            cout << "ENTER THE DESTINATION STATION: ";
-            getline(cin, ss2);
-
-            unordered_map<string, bool> processed3;
-            if (!g.containsVertex(ss1) || !g.containsVertex(ss2) || !g.hasPath(ss1, ss2, processed3))
-                cout << "THE INPUTS ARE INVALID" << endl;
-            else
-            {
-                vector<string> str = g.get_Interchanges(g.Get_Minimum_Time(ss1, ss2));
-                int len = str.size();
-                cout << "SOURCE STATION : " << ss1 << endl;
-                cout << "DESTINATION STATION : " << ss2 << endl;
-                cout << "TIME : " << str[len - 1] << " MINUTES" << endl;
-                cout << "NUMBER OF INTERCHANGES : " << str[len - 2] << endl;
-                cout << "~~~~~~~~~~~~~" << endl;
-                cout << "START  ==>  " << str[0] << endl;
-                for (int i = 1; i < len - 3; i++)
-                {
-                    cout << str[i] << endl;
-                }
-                cout << str[len - 3] << "   ==>    END";
-                cout << "\n~~~~~~~~~~~~~" << endl;
-            }
-            break;
-        }
-
-        default:
-            cout << "Invalid choice" << endl;
-            break;
         }
     }
 
     return 0;
 }
-
-
-

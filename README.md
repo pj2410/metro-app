@@ -56,3 +56,4 @@ The program displays the following information to the user:
 * **Integrate with a database to store and update metro station information**
 * **Add more algorithms to find the shortest path (e.g., breadth-first search, depth-first search)**
 * **Implement a more advanced user interface (e.g., GUI) for better user experience**
+* **Add the feature where if a station's activity is disrupted it can give a new path**
